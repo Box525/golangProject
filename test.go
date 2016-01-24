@@ -21,7 +21,6 @@ import (
 	"net/http"
 	"os"
 	// "strconv"
-	"regexp"
 	"strings"
 )
 
@@ -2237,17 +2236,7 @@ func StaticServer(w http.ResponseWriter, req *http.Request) {
 // 	staticHandler = http.StripPrefix("./", http.FileServer(http.Dir("radio")))
 // }
 
-// const (
-//   regular ="^(13[0-9]|14[57]|15[0-35-9]|18[07-9])\d{8}$"
-// )
-
-func checkEmail(name string) {
-	match, _ := regexp.MatchString(name, "^([w-.]+)@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([w-]+.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$")
-	fmt.Print(match)
-}
-
 func main() {
-
 	//设置访问的路由
 	//登陆
 	http.HandleFunc("/api/login", handler)
