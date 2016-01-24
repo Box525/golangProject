@@ -1687,6 +1687,17 @@ func init() {
 	flag.Parse()
 }
 
+//正则匹配 邮箱
+func isEmail(email string) bool {
+	if email != "" {
+		if isOk, _ := regexp.MatchString("^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$", email); isOk {
+			return true
+		}
+		return false
+	}
+	return false
+}
+
 //打开数据库连接
 func opendb(dbstr string) *sql.DB {
 	db, err := sql.Open("mysql", dbstr)
@@ -3354,6 +3365,30 @@ func handlerR(w http.ResponseWriter, r *http.Request) {
 		u.User.Sweet = ""
 		fmt.Println("++++++++++++++++++++++++++", u.User.Name)
 
+		retEmail := isEmail(u.User.Name)
+		if retEmail {
+			fmt.Println("is Email!!!")
+		} else {
+			fmt.Println("is not Email!!!!")
+
+			var returnD Message
+			returnD.Status = true
+			returnD.ReturnInfo = 200
+			returnD.Token = ""
+			returnD.Time = time.Now().Format("2006-01-02 15:04:05")
+			returnD.Dec = "Warning!!! your name don't email!!!!"
+
+			r, err2 := json.Marshal(returnD)
+			if err2 != nil {
+				fmt.Println(err2)
+			}
+
+			fmt.Println(string(r))
+			fmt.Fprintf(w, "%s", r)
+
+			return
+		}
+
 		fmt.Println("*************************************************")
 
 		// decName, err := base64Decode([]byte(u.User.Name))
@@ -3570,8 +3605,32 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		u_info.User.Name = string(uDec)
 		u_info.User.Password = string(pDec)
 		// u_info.Token = string(tDec)
-
+		//判断用户名是否符合格式
 		// fmt.Println("++++++++++++++++++++++++++", u_info.Token)
+
+		retEmail := isEmail(u_info.User.Name)
+		if retEmail {
+			fmt.Println("is Email!!!")
+		} else {
+			fmt.Println("is not Email!!!!")
+
+			var returnD Message
+			returnD.Status = true
+			returnD.ReturnInfo = 200
+			returnD.Token = ""
+			returnD.Time = time.Now().Format("2006-01-02 15:04:05")
+			returnD.Dec = "Warning!!! your name don't email!!!!"
+
+			r, err2 := json.Marshal(returnD)
+			if err2 != nil {
+				fmt.Println(err2)
+			}
+
+			fmt.Println(string(r))
+			fmt.Fprintf(w, "%s", r)
+
+			return
+		}
 
 		fmt.Println("++++++++++++++++++++++++++", u_info.User.Name, u_info.User.Password)
 
